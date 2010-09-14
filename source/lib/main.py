@@ -63,27 +63,28 @@ def main():
    clock  = pygame.time.Clock()
    images = [screen.image_load('green.jpeg'),screen.image_load('red.jpeg')]
    case   = 0
-   rate   = 20
-   delay  = 1000/rate
+   rate   = 120
+   delay  = 1./rate
    glass = usbir.shutterglass(0x0955,0x0007)
    glass.set_rate(rate)
-   pygame.time.set_timer(USEREVENT+1, delay)
    while True:
+     t1 = time.time()
      events = pygame.event.get()
-     for e in events:
+     #for e in events:
        if e.type == QUIT or (e.type == KEYDOWN and e.key == K_ESCAPE):
          sys.exit()
-       if e.type == USEREVENT+1:
-         glass.swap_eye()
-         clock.tick()
-         if case == 1:
-           screen.image_blit(images[0],160,120)
-           case = 0
-         elif case == 0:
-           screen.image_blit(images[1],160,120)
-           case = 1
-         screen.text_blit(('FPS: '+ str(int(clock.get_fps()))),global_color,50,230,"fonts/ka1.ttf",10)
-         screen.refresh()
+     glass.swap_eye()
+     clock.tick()
+     if case == 1:
+       screen.image_blit(images[0],160,120)
+       case = 0
+     elif case == 0:
+       screen.image_blit(images[1],160,120)
+       case = 1
+     screen.text_blit(('FPS: '+ str(int(clock.get_fps()))),global_color,50,230,"fonts/ka1.ttf",10)
+     screen.refresh()
+     tlast = delay-(time.time()-t1)
+     time.sleep(tlast)
    return
       
 if __name__ == "__main__":
