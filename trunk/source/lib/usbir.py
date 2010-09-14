@@ -13,6 +13,7 @@ class shutterglass:
   def __init__(self,idv,idp):
     self.NVSTUSB_CLOCK       = 48000000
     self.filename            = 'firmware/nvstusb.fw'
+    self.mode3d              = 1
     self.endpoints           = []
     self.interface           = []
     self.idv                 = idv
@@ -113,10 +114,11 @@ class shutterglass:
     self.set_eye(self.eye,r)
     return True
   def set_eye(self,eye,r=0):
-    self.eye = eye
-    print self.cap, 'Setting open eye...'
-    self.write([0xAA,0xff if eye%2 else 0xfe,0x00,0x00,r>>8&0xff,r>>16&0xff,0xff,0xff],0)
-    print self.cap, 'Left' if eye%2 else 'Right', 'eye is open.'
+    if self.mode3d == 1:
+      self.eye = eye
+      print self.cap, 'Setting open eye...'
+      self.write([0xAA,0xff if eye%2 else 0xfe,0x00,0x00,r>>8&0xff,r>>16&0xff,0xff,0xff],0)
+      print self.cap, 'Left' if eye%2 else 'Right', 'eye is open.'
     self.get_keys()
     return True
   def get_keys(self):
@@ -127,14 +129,18 @@ class shutterglass:
       deltaWheel = readBuf[4]
       toggled3D  = readBuf[6] & 0x01
       print self.cap, 'Delta wheel:',deltaWheel, 'Toggled 3D: ',toggled3D
+      self.mode3d = toggled3D ^ self.mode3d
     return True
 
 def main():
   glass = shutterglass(0x0955,0x0007)
-  glass.set_rate(120)
-  for i in range(0,2):
+  rate  = 120
+  delay = 1./rate
+  glass.set_rate(rate)
+  while True:
+    t1 = time.time()
     glass.swap_eye()
-    time.sleep(1)
+    time.sleep(delay+time.time()-t1)
   return
 
 if __name__ == "__main__":
