@@ -60,7 +60,8 @@ class window:
 def main():
    screen = window()
    clock  = pygame.time.Clock()
-   images = [screen.image_load('sunl.jpg'),screen.image_load('sunr.jpg')]
+   images = [screen.image_load('green.jpeg'),screen.image_load('red.jpeg')]
+   #images = [screen.image_load('sunl.jpg'),screen.image_load('sunr.jpg')]
    case   = 0
    rate   = 65
    glass = usbir.shutterglass(0x0955,0x0007)
