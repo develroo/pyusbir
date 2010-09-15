@@ -56,35 +56,36 @@ class window:
   def draw_rectangle(self,rect,color):
     pygame.draw.rect(self.background, color, (rect[0],rect[1],rect[2],rect[3]),2)
     return True
-  def cache_images(self):
-    return True
+    
 def main():
    screen = window()
    clock  = pygame.time.Clock()
-   images = [screen.image_load('green.jpeg'),screen.image_load('red.jpeg')]
+   images = [screen.image_load('sunl.jpg'),screen.image_load('sunr.jpg')]
    case   = 0
-   rate   = 120
-   delay  = 1./rate
+   rate   = 65
    glass = usbir.shutterglass(0x0955,0x0007)
    glass.set_rate(rate)
    while True:
      t1 = time.time()
      events = pygame.event.get()
-     #for e in events:
+     for e in events:
        if e.type == QUIT or (e.type == KEYDOWN and e.key == K_ESCAPE):
+	 glass.close_device()
          sys.exit()
-     glass.swap_eye()
      clock.tick()
-     if case == 1:
+     if case == 0:
        screen.image_blit(images[0],160,120)
-       case = 0
-     elif case == 0:
+     else:
        screen.image_blit(images[1],160,120)
-       case = 1
-     screen.text_blit(('FPS: '+ str(int(clock.get_fps()))),global_color,50,230,"fonts/ka1.ttf",10)
-     screen.refresh()
-     tlast = delay-(time.time()-t1)
-     time.sleep(tlast)
+     case = 1 - case
+     screen.text_blit(('FPS: '+ str(round(clock.get_fps(),1))),global_color,50,230,"fonts/ka1.ttf",10)
+     screen.refresh() 
+     glass.swap_eye()
+     delay =  1./rate - time.time() +  t1
+     if delay > 0:
+       time.sleep(delay)
+     else:
+       print delay
    return
       
 if __name__ == "__main__":
