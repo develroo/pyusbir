@@ -17,10 +17,10 @@ class window:
     print "\x1b\x5b1;33;32m" + localtime + ', Kaan AKŞİT, 2010' + "\x1b[0m"
     print "\x1b\x5b1;31;40m" + 'Pygame version: '+ "\x1b[0m" + str(pygame.version.ver)
     pygame.init()
-    window.screen     = pygame.display.set_mode((320, 240),pygame.DOUBLEBUF)
+    self.screen     = pygame.display.set_mode((640, 480),pygame.HWSURFACE)
     print "\x1b\x5b1;31;40m" + 'Video info: '+ "\x1b[0m",
     print "\x1b\x5b1;33;20m", pygame.display.Info(), "\x1b[0m"
-    self.background = pygame.Surface(window.screen.get_size())
+    self.background = pygame.Surface(self.screen.get_size())
     self.background.set_colorkey((250, 250, 250))
     pygame.display.set_caption(('caption'))
   def image_load(self,image_name):
@@ -46,7 +46,7 @@ class window:
     data_dir = os.path.normpath(os.path.join(data_py, '..', 'datas'))
     return os.path.join(data_dir, filename)
   def refresh(self):
-    window.screen.blit(self.background, (0, 0))
+    self.screen.blit(self.background, (0, 0))
     pygame.display.flip()
     return True
   def blit(self,image,rect):
@@ -63,28 +63,32 @@ def main():
    images = [screen.image_load('green.jpeg'),screen.image_load('red.jpeg')]
    #images = [screen.image_load('sunl.jpg'),screen.image_load('sunr.jpg')]
    case   = 0
-   rate   = int(sys.argv[1])
-   #glass = usbir.shutterglass(0x0955,0x0007)
-   #glass.set_rate(rate)
+   rate   = float(sys.argv[1])
+   glass = usbir.shutterglass(0x0955,0x0007)
+   glass.set_rate(rate)
+   rate = 123.71
+   pygame.display.init()
    while True:
      t1 = time.time()
      events = pygame.event.get()
      for e in events:
        if e.type == QUIT or (e.type == KEYDOWN and e.key == K_ESCAPE):
-	 #glass.close_device()
+         glass.close_device()
          sys.exit()
+       if e.type == MOUSEBUTTONDOWN:
+	 pygame.display.toggle_fullscreen()
      clock.tick()
      if case == 0:
        screen.image_blit(images[0],160,120)
      else:
        screen.image_blit(images[1],160,120)
-     case = 1 - case
+     #case = 1 - case
      screen.text_blit(('FPS: '+ str(round(clock.get_fps(),1))),global_color,50,230,"fonts/ka1.ttf",10)
      screen.refresh() 
-     #glass.swap_eye()
-     delay =  1./rate - time.time() +  t1
-     if delay > 0:
-       time.sleep(delay)
+     glass.swap_eye()
+     #delay =  1./rate - time.time() +  t1
+     #if delay > 0:
+       #time.sleep(delay)
      #else:
        #print delay
    return
