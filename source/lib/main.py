@@ -17,7 +17,8 @@ class window:
     print "\x1b\x5b1;33;32m" + localtime + ', Kaan AKŞİT, 2010' + "\x1b[0m"
     print "\x1b\x5b1;31;40m" + 'Pygame version: '+ "\x1b[0m" + str(pygame.version.ver)
     pygame.init()
-    self.screen     = pygame.display.set_mode((640, 480),pygame.HWSURFACE)
+    self.screen     = pygame.display.set_mode((320, 240),pygame.HWSURFACE)
+    #pygame.display.toggle_fullscreen()
     print "\x1b\x5b1;31;40m" + 'Video info: '+ "\x1b[0m",
     print "\x1b\x5b1;33;20m", pygame.display.Info(), "\x1b[0m"
     self.background = pygame.Surface(self.screen.get_size())
@@ -76,21 +77,16 @@ def main():
          glass.close_device()
          sys.exit()
        if e.type == MOUSEBUTTONDOWN:
-	 pygame.display.toggle_fullscreen()
-     clock.tick()
+         pygame.display.toggle_fullscreen()
      if case == 0:
        screen.image_blit(images[0],160,120)
      else:
        screen.image_blit(images[1],160,120)
-     #case = 1 - case
+     case = 1 - case
      screen.text_blit(('FPS: '+ str(round(clock.get_fps(),1))),global_color,50,230,"fonts/ka1.ttf",10)
      screen.refresh() 
      glass.swap_eye()
-     #delay =  1./rate - time.time() +  t1
-     #if delay > 0:
-       #time.sleep(delay)
-     #else:
-       #print delay
+     clock.tick(rate)
    return
       
 if __name__ == "__main__":
