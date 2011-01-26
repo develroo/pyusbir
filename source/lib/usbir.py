@@ -159,11 +159,12 @@ def main():
   else:
     rate = 86
   glass.set_rate(rate)
+  rate = 124.24
   while True:
     try:
       t1 = time.time()
       glass.swap_eye()
-      delay =  1./rate - time.time() +  t1
+      delay = 1./rate - time.time() +  t1
       if delay > 0:
         time.sleep(delay)
     except KeyboardInterrupt:
