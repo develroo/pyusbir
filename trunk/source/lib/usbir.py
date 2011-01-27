@@ -3,7 +3,7 @@
 #Programmed by Kaan AKŞİT
 
 try:
-  import sys,os,usb.core,usb.util,time
+  import sys,os,usb.core,usb.util,time,pygame
   from array import array
 except ImportError, err:
   print "couldn't load module. %s" % (err)
@@ -144,7 +144,6 @@ class shutterglass:
     cmd1 = [0x02,0x1b,0x01,0x00]
     self.write(cmd1)
     data  = self.read()
-    print data
     cmd0x1b = [0x01,0x1b,0x01,0x00,0x03]
     self.write(cmd0x1b)
     print '\n',self.cap, 'NVIDIA stereo controller is disconnected!'
@@ -154,19 +153,21 @@ class shutterglass:
 
 def main():
   glass = shutterglass(0x0955,0x0007)
+  clock  = pygame.time.Clock()
   if len(sys.argv)> 1:
     rate  = float(sys.argv[1])
   else:
     rate = 86
   glass.set_rate(rate)
-  rate = 124.24
+  rate = 124.7
   while True:
     try:
       t1 = time.time()
       glass.swap_eye()
-      delay = 1./rate - time.time() +  t1
-      if delay > 0:
-        time.sleep(delay)
+      clock.tick(rate)
+      #delay = 1./rate - time.time() +  t1
+      #if delay > 0:
+        #time.sleep(delay)
     except KeyboardInterrupt:
       glass.close_device()
       sys.exit()
