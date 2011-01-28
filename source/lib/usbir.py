@@ -3,7 +3,7 @@
 #Programmed by Kaan AKŞİT
 
 try:
-  import sys,os,usb.core,usb.util,time,pygame
+  import sys,os,usb.core,usb.util,time
   from array import array
 except ImportError, err:
   print "couldn't load module. %s" % (err)
@@ -153,21 +153,19 @@ class shutterglass:
 
 def main():
   glass = shutterglass(0x0955,0x0007)
-  clock  = pygame.time.Clock()
   if len(sys.argv)> 1:
     rate  = float(sys.argv[1])
   else:
     rate = 86
   glass.set_rate(rate)
-  rate = 124.7
+  rate = rate + 4.1
   while True:
     try:
       t1 = time.time()
       glass.swap_eye()
-      clock.tick(rate)
-      #delay = 1./rate - time.time() +  t1
-      #if delay > 0:
-        #time.sleep(delay)
+      delay = 1./rate - time.time() +  t1
+      if delay > 0:
+        time.sleep(delay)
     except KeyboardInterrupt:
       glass.close_device()
       sys.exit()

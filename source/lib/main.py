@@ -67,7 +67,7 @@ def main():
    rate   = float(sys.argv[1])
    glass = usbir.shutterglass(0x0955,0x0007)
    glass.set_rate(rate)
-   rate = 123.71
+   rate = rate + 0.2
    pygame.display.init()
    while True:
      t1 = time.time()
