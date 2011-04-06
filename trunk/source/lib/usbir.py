@@ -3,7 +3,7 @@
 #Programmed by Kaan AKŞİT
 
 try:
-  import sys,os,usb.core,usb.util,time
+  import sys,os,usb.core,usb.util,time,pygame
   from array import array
 except ImportError, err:
   print "couldn't load module. %s" % (err)
@@ -150,24 +150,50 @@ class shutterglass:
     #buf = [0xaa,0xFF,0x00,0x00,0x71,0xD9,0xFF,0xFF]
     #self.write(buf,1)
     return True
+   
+def enable_vsync():
+    if sys.platform != 'darwin':
+        return
+    try:
+        import ctypes
+        import ctypes.util
+        ogl = ctypes.cdll.LoadLibrary(ctypes.util.find_library("OpenGL"))
+        # set v to 1 to enable vsync, 0 to disable vsync
+        v = ctypes.c_int(1)
+        ogl.CGLSetParameter(ogl.CGLGetCurrentContext(), ctypes.c_int(222), ctypes.pointer(v))
+    except:
+        print "Unable to set vsync mode, using driver defaults"
 
 def main():
-  glass = shutterglass(0x0955,0x0007)
+  #glass = shutterglass(0x0955,0x0007)
   if len(sys.argv)> 1:
     rate  = float(sys.argv[1])
   else:
     rate = 86
-  glass.set_rate(rate)
-  rate = rate + 4.1
+  #glass.set_rate(rate)
+  clock = pygame.time.Clock()
+  rate  = rate + 4.1
+  flag  = 0
+  #enable_vsync()
+  pygame.init()
+  screen = pygame.display.set_mode((320,240),pygame.FULLSCREEN|pygame.HWSURFACE|pygame.OPENGL|pygame.DOUBLEBUF)
   while True:
     try:
-      t1 = time.time()
-      glass.swap_eye()
-      delay = 1./rate - time.time() +  t1
-      if delay > 0:
-        time.sleep(delay)
+      events = pygame.event.get()
+      for e in events:
+        if e.type == pygame.QUIT or (e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE):
+          #glass.close_device()
+          sys.exit()
+      clock.tick()
+      print clock.get_fps()
+      pygame.display.flip()
+      #t1 = time.time()
+      #glass.swap_eye()
+      #delay = 1./rate - time.time() +  t1
+      #if delay > 0:
+        #time.sleep(delay)
     except KeyboardInterrupt:
-      glass.close_device()
+      #glass.close_device()
       sys.exit()
   return
 
