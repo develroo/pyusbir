@@ -17,7 +17,7 @@ class window:
     print "\x1b\x5b1;33;32m" + localtime + ', Kaan AKŞİT, 2010' + "\x1b[0m"
     print "\x1b\x5b1;31;40m" + 'Pygame version: '+ "\x1b[0m" + str(pygame.version.ver)
     pygame.init()
-    self.screen     = pygame.display.set_mode((320, 240),pygame.HWSURFACE)
+    self.screen     = pygame.display.set_mode((320, 240),HWSURFACE)
     #pygame.display.toggle_fullscreen()
     print "\x1b\x5b1;31;40m" + 'Video info: '+ "\x1b[0m",
     print "\x1b\x5b1;33;20m", pygame.display.Info(), "\x1b[0m"
@@ -86,7 +86,7 @@ def main():
      screen.text_blit(('FPS: '+ str(round(clock.get_fps(),1))),global_color,50,230,"fonts/ka1.ttf",10)
      screen.refresh() 
      glass.swap_eye()
-     clock.tick(rate)
+     #clock.tick()
    return
       
 if __name__ == "__main__":
