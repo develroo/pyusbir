@@ -165,18 +165,18 @@ def enable_vsync():
         print "Unable to set vsync mode, using driver defaults"
 
 def main():
-  #glass = shutterglass(0x0955,0x0007)
+  glass = shutterglass(0x0955,0x0007)
   if len(sys.argv)> 1:
     rate  = float(sys.argv[1])
   else:
     rate = 86
-  #glass.set_rate(rate)
+  glass.set_rate(rate)
   clock = pygame.time.Clock()
   rate  = rate + 4.1
   flag  = 0
-  #enable_vsync()
+  enable_vsync()
   pygame.init()
-  screen = pygame.display.set_mode((320,240),pygame.FULLSCREEN|pygame.HWSURFACE|pygame.OPENGL|pygame.DOUBLEBUF)
+#  screen = pygame.display.set_mode((320,240),pygame.FULLSCREEN|pygame.HWSURFACE|pygame.OPENGL|pygame.DOUBLEBUF)
   while True:
     try:
       events = pygame.event.get()
@@ -186,16 +186,17 @@ def main():
           sys.exit()
       clock.tick()
       print clock.get_fps()
-      pygame.display.flip()
-      #t1 = time.time()
-      #glass.swap_eye()
-      #delay = 1./rate - time.time() +  t1
-      #if delay > 0:
-        #time.sleep(delay)
+      #pygame.display.flip()
+      t1 = time.time()
+      glass.swap_eye()
+      delay = 1./rate - time.time() +  t1
+      if delay > 0:
+        time.sleep(delay)
     except KeyboardInterrupt:
-      #glass.close_device()
+      glass.close_device()
       sys.exit()
   return
 
 if __name__ == "__main__":
   sys.exit(main())
+
